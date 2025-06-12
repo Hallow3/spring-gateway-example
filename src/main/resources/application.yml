@@ -1,1 +1,60 @@
-spring.application.name=spring-gateway-example
+# Nom de l'application
+spring:
+  application:
+    name: spring-gateway-example
+    # Configuration de Spring Cloud Gateway
+  cloud:
+    gateway:
+      # Déclaration des différentes routes gérées par Spring Cloud Gateway
+      server:
+        webflux:
+          routes:
+            # Route 1 - Requête vers /predicate1/** redirigée vers http://localhost:8080
+                    - id: test         # identifiant unique de la route
+                      uri: https://www.google.com # URI cible (donc ton url django)
+                      predicates:                 # Conditions à remplir pour que cette route s'applique
+                        - Path=/test/**     # Ici : l'URL doit commencer par /test/
+
+                    # Route 2 - Même logique que route 1
+                    - id: predicate2_route
+                      uri: http://localhost:8080
+                      predicates:
+                        - Path=/predicate2/**
+
+                    # Route 3 - Redirige vers un service sécurisé avec filtre d'authentification JWT
+                    - id: secured1_route
+                      uri: http://localhost:8888/secured
+                      predicates:
+                        - Path=/predicate3/**
+                      filters:
+                        - name: AuthenticationFilter  # Applique le filtre perso pour authentifier les requêtes
+
+                    # Route 4 - Même logique que route 3
+                    - id: secured2_route
+                      uri: http://localhost:8888/secured
+                      predicates:
+                        - Path=/predicate4/**
+                      filters:
+                        - name: AuthenticationFilter
+
+                    # Route 5 - Accessible sans authentification (route "publique")
+                    - id: authentication_route
+                      uri: http://localhost:8988
+                      predicates:
+                        - Path=/authentication/**
+
+# Clé secrète utilisée pour signer ou valider les JWT (à sécuriser en prod !)
+jwt:
+  secret: 63E7E8BE05A8F2D34F60FAA (suite...)
+
+# Liste des endpoints qui ne nécessitent pas d'authentification
+gateway:
+  open:
+    endpoints:
+      - /authentication/client/register
+      - /authentication/admin/register
+      - /authentication/validate
+      - /authentication/generate
+    # Cette liste est utilisée par le RouteValidator pour ignorer l'authentification
+server:
+  port: 8888
