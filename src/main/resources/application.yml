@@ -2,34 +2,32 @@
 spring:
   application:
     name: spring-gateway-example
-    # Configuration de Spring Cloud Gateway
   cloud:
     gateway:
-      # Déclaration des différentes routes gérées par Spring Cloud Gateway
       server:
         webflux:
           routes:
-            # Route 1 - Requête vers /predicate1/** redirigée vers http://localhost:8080
+            # Route 1 - Requï¿½te vers /predicate1/** redirigï¿½e vers http://localhost:8080
                     - id: test         # identifiant unique de la route
                       uri: https://www.google.com # URI cible (donc ton url django)
-                      predicates:                 # Conditions à remplir pour que cette route s'applique
+                      predicates:                 # Conditions ï¿½ remplir pour que cette route s'applique
                         - Path=/test/**     # Ici : l'URL doit commencer par /test/
 
-                    # Route 2 - Même logique que route 1
+                    # Route 2 - Mï¿½me logique que route 1
                     - id: predicate2_route
                       uri: http://localhost:8080
                       predicates:
                         - Path=/predicate2/**
 
-                    # Route 3 - Redirige vers un service sécurisé avec filtre d'authentification JWT
+                    # Route 3 - Redirige vers un service sï¿½curisï¿½ avec filtre d'authentification JWT
                     - id: secured1_route
                       uri: http://localhost:8888/secured
                       predicates:
                         - Path=/predicate3/**
                       filters:
-                        - name: AuthenticationFilter  # Applique le filtre perso pour authentifier les requêtes
+                        - name: AuthenticationFilter  # Applique le filtre perso pour authentifier les requï¿½tes
 
-                    # Route 4 - Même logique que route 3
+                    # Route 4 - Mï¿½me logique que route 3
                     - id: secured2_route
                       uri: http://localhost:8888/secured
                       predicates:
@@ -43,11 +41,8 @@ spring:
                       predicates:
                         - Path=/authentication/**
 
-# Clé secrète utilisée pour signer ou valider les JWT (à sécuriser en prod !)
 jwt:
-  secret: 63E7E8BE05A8F2D34F60FAA (suite...)
-
-# Liste des endpoints qui ne nécessitent pas d'authentification
+  secret: 63E7E8BE05A8C6EF206C75DF2D34F60FAA2C84E7F1B2095492A0056416056583
 gateway:
   open:
     endpoints:
@@ -55,6 +50,6 @@ gateway:
       - /authentication/admin/register
       - /authentication/validate
       - /authentication/generate
-    # Cette liste est utilisée par le RouteValidator pour ignorer l'authentification
+
 server:
   port: 8888
